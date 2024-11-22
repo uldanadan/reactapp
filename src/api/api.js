@@ -19,3 +19,28 @@ export const registerUser = async (userData) => {
         console.error('Error registering user:', error);
     }
 };
+
+export const getApplications = async (userId) => {
+    try {
+        const response = await axios.get(`${API_URL}/applications/${userId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching applications:', error);
+    }
+};
+
+export const submitApplication = async (formData) => {
+    try {
+        const response = await axios.post(`${API_URL}/applications`, formData, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.data;
+    } catch (err) {
+        console.error('Error submitting application:', err);
+        throw err;
+    }
+};
+
+
