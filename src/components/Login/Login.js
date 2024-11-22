@@ -4,6 +4,7 @@ import './Login.scss';
 import Button from '../UI/Button/Button';
 import Input from '../UI/Input/Input';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { getUsers } from '../../api/api';
 
 function Login() {
     const [email, setEmail] = useState('');
@@ -12,22 +13,28 @@ function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
-    const handleLogin = () => {
+    const handleLogin = async () => {
         if (!email || !password) {
             setError("Please fill in both fields.");
             return;
         }
 
-        const users = JSON.parse(localStorage.getItem('users')) || [];
-        const user = users.find(user => user.email === email && user.password === password);
+        try {
+            const users = await getUsers();
 
-        if (!user) {
-            setError("Invalid email or password.");
-            return;
+            const user = users.find(user => user.email === email && user.password === password);
+
+            if (!user) {
+                setError("Invalid email or password.");
+                return;
+            }
+
+            setError('');
+            navigate('/dashboard');
+        } catch (err) {
+            setError("An error occurred. Please try again.");
+            console.error(err);
         }
-
-        setError('');
-        navigate('/dashboard');
     };
 
     const togglePasswordVisibility = () => {
@@ -56,7 +63,7 @@ function Login() {
                         className="login__password-toggle"
                         onClick={togglePasswordVisibility}
                     >
-                        {showPassword ? <FaEyeSlash/> : <FaEye/>} {}
+                        {showPassword ? <FaEyeSlash/> : <FaEye/>}
                     </button>
                 </div>
                 <Button onClick={handleLogin} className="primary">Login</Button>

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Button from '../UI/Button/Button';
 import Input from '../UI/Input/Input';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { registerUser, getUsers } from '../../api/api';
 import './Register.scss';
 
 function Register() {
@@ -13,7 +14,7 @@ function Register() {
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
-    const handleRegister = () => {
+    const handleRegister = async () => {
         if (!fullName || !email || !password) {
             setError('All fields are required');
             return;
@@ -29,18 +30,22 @@ function Register() {
             return;
         }
 
-        const users = JSON.parse(localStorage.getItem('users')) || [];
+        try {
+            const users = await getUsers();
+            const userExists = users.some((user) => user.email === email);
+            if (userExists) {
+                setError('User with this email already exists');
+                return;
+            }
 
-        const userExists = users.some((user) => user.email === email);
-        if (userExists) {
-            setError('User with this email already exists');
-            return;
+            const newUser = { fullName, email, password };
+            await registerUser(newUser);
+
+            navigate('/login');
+        } catch (err) {
+            setError('An error occurred. Please try again.');
+            console.error(err);
         }
-
-        users.push({ fullName, email, password });
-        localStorage.setItem('users', JSON.stringify(users));
-
-        navigate('/login');
     };
 
     return (
