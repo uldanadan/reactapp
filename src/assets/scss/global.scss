@@ -1,0 +1,83 @@
+$primary-color: #007bff;
+$secondary-color: #f8f9fa;
+$shadow-color: rgba(0, 0, 0, 0.1);
+$font-color-dark: #333;
+$font-color-light: #555;
+$font-color-error: red;
+$border-radius: 10px;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background-color: #f8f9fa;
+}
+
+h2, p {
+  margin: 0;
+}
+
+.centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.title {
+  font-size: 24px;
+  color: #333;
+  margin: 20px 0;
+  font-weight: bold;
+}
+
+.text {
+  color: #555;
+  font-size: 16px;
+  margin: 5px 0;
+}
+
+.button-container {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px $shadow-color;
+  text-align: left;
+}
+
+.card-text {
+  color: $font-color-light;
+  margin: 5px 0;
+}
+
+.link {
+  font-style: italic;
+  color: $primary-color;
+}
+
+.list {
+  width: 100%;
+  max-width: 700px;
+  list-style: none;
+  padding: 0;
+}
+
+.list-item {
+  background: white;
+  padding: 20px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px $shadow-color;
+  text-align: left;
+}

@@ -1,21 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Button from '../UI/Button/Button';
-import Input from '../UI/Input/Input';
-import Textarea from '../UI/Textarea/Textarea';
+import Button from '../../UI/Button/Button';
+import Input from '../../UI/Input/Input';
+import Textarea from '../../UI/Textarea/Textarea';
 import { FaFileUpload } from 'react-icons/fa';
-import { submitApplication, getApplications } from '../../api/api';
-import './Application.scss';
+import './ApplicationSubmit.scss';
 
-function Application() {
+function ApplicationSubmit() {
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
     const [description, setDescription] = useState('');
     const [file, setFile] = useState(null);
     const [error, setError] = useState('');
-    const [applications, setApplications] = useState([]);
     const navigate = useNavigate();
-    const userId = 1;
+
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+    useEffect(() => {
+        if (!currentUser) {
+            navigate('/login');
+        }
+    }, [currentUser, navigate]);
 
     const handleFileChange = (e) => {
         const selectedFile = e.target.files[0];
@@ -24,7 +29,7 @@ function Application() {
         }
     };
 
-    const handleSubmitApplication = async () => {
+    const handleSubmitApplication = () => {
         if (!fullName || !email || !description) {
             setError('All fields are required');
             return;
@@ -36,36 +41,20 @@ function Application() {
             description,
             file: file ? file.name : null,
             status: 'Pending',
-            userId: userId
         };
 
-        try {
-            const response = await submitApplication(applicationData);
-            console.log(response);
-            setError('');
-            setFullName('');
-            setEmail('');
-            setDescription('');
-            setFile(null);
-            navigate('/applications');
-        } catch (err) {
-            setError('An error occurred. Please try again.');
-            console.error(err);
-        }
-    };
+        const allApplications = JSON.parse(localStorage.getItem('applications')) || [];
 
-    const fetchApplications = async () => {
-        try {
-            const userApplications = await getApplications(userId);
-            setApplications(userApplications);
-        } catch (error) {
-            console.error('Error fetching applications:', error);
-        }
-    };
+        const newApplication = { ...applicationData, userId: currentUser.email };
+        allApplications.push(newApplication);
+        localStorage.setItem('applications', JSON.stringify(allApplications));
 
-    useEffect(() => {
-        fetchApplications();
-    }, []);
+        setFullName('');
+        setEmail('');
+        setDescription('');
+        setFile(null);
+        navigate('/applications');
+    };
 
     return (
         <div className="application">
@@ -88,16 +77,16 @@ function Application() {
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Description"
-                    className="application__textarea"
                 />
                 <div className="application__file-upload">
                     <input
                         type="file"
+                        id="file"
                         onChange={handleFileChange}
-                        className="application__file-input"
+                        style={{display: 'none'}}
                     />
                     <label htmlFor="file" className="application__file-label">
-                        <FaFileUpload /> Upload File
+                        <FaFileUpload/> Upload File
                     </label>
                 </div>
                 <Button onClick={handleSubmitApplication} className="primary">
@@ -105,23 +94,8 @@ function Application() {
                 </Button>
                 {error && <p className="application__error-message">{error}</p>}
             </div>
-            <div className="application__list">
-                <h2>Your Previous Applications</h2>
-                <ul>
-                    {applications && applications.length > 0 ? (
-                        applications.map((app, index) => (
-                            <li key={index}>
-                                <p><strong>{app.fullName}</strong> - {app.status}</p>
-                                <p>{app.description}</p>
-                            </li>
-                        ))
-                    ) : (
-                        <p>No applications found.</p>
-                    )}
-                </ul>
-            </div>
         </div>
     );
 }
 
-export default Application;
+export default ApplicationSubmit;

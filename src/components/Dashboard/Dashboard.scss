@@ -1,0 +1,35 @@
+.manager-dashboard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  background-color: #f8f9fa;
+
+  .list {
+    width: 100%;
+    max-width: 700px;
+    list-style: none;
+    padding: 0;
+  }
+
+  .list-item {
+    background: white;
+    padding: 20px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: left;
+
+    .button-container {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .comments-section {
+      margin-top: 20px;
+      font-size: 1rem;
+      color: #777;
+    }
+  }
+}

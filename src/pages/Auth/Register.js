@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Button from '../UI/Button/Button';
-import Input from '../UI/Input/Input';
+import Button from '../../components/UI/Button/Button';
+import Input from '../../components/UI/Input/Input';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import { registerUser, getUsers } from '../../api/api';
-import './Register.scss';
+import './Auth.scss';
 
 function Register() {
     const [fullName, setFullName] = useState('');
@@ -14,7 +13,7 @@ function Register() {
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
-    const handleRegister = async () => {
+    const handleRegister = () => {
         if (!fullName || !email || !password) {
             setError('All fields are required');
             return;
@@ -30,28 +29,24 @@ function Register() {
             return;
         }
 
-        try {
-            const users = await getUsers();
-            const userExists = users.some((user) => user.email === email);
-            if (userExists) {
-                setError('User with this email already exists');
-                return;
-            }
-
-            const newUser = { fullName, email, password };
-            await registerUser(newUser);
-
-            navigate('/login');
-        } catch (err) {
-            setError('An error occurred. Please try again.');
-            console.error(err);
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        const userExists = users.some(user => user.email === email);
+        if (userExists) {
+            setError('User with this email already exists');
+            return;
         }
+
+        const newUser = { fullName, email, password };
+        users.push(newUser);
+        localStorage.setItem('users', JSON.stringify(users));
+
+        navigate('/login');
     };
 
     return (
-        <div className="register">
-            <div className="register__form">
-                <h2 className="register__title">Register</h2>
+        <div className="register centered">
+            <div className="form-container">
+                <h2 className="title">Register</h2>
                 <Input
                     type="text"
                     value={fullName}
@@ -65,20 +60,19 @@ function Register() {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Email"
                 />
-                <div className="register__password-wrapper">
+                <div className="password-wrapper">
                     <Input
                         type={showPassword ? "text" : "password"}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="Password"
-                        className="register__input"
                     />
                     <button
                         type="button"
-                        className="register__password-toggle"
+                        className="password-toggle"
                         onClick={() => setShowPassword(prevState => !prevState)}
                     >
-                        {showPassword ? <FaEyeSlash /> : <FaEye />} {}
+                        {showPassword ? <FaEyeSlash /> : <FaEye />}
                     </button>
                 </div>
                 <Button onClick={handleRegister} className="primary">

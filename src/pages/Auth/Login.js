@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Login.scss';
-import Button from '../UI/Button/Button';
-import Input from '../UI/Input/Input';
+import './Auth.scss';
+import Button from '../../components/UI/Button/Button';
+import Input from '../../components/UI/Input/Input';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import { getUsers } from '../../api/api';
 
 function Login() {
     const [email, setEmail] = useState('');
@@ -13,28 +12,23 @@ function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
-    const handleLogin = async () => {
+    const handleLogin = () => {
         if (!email || !password) {
             setError("Please fill in both fields.");
             return;
         }
 
-        try {
-            const users = await getUsers();
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        const user = users.find(user => user.email === email && user.password === password);
 
-            const user = users.find(user => user.email === email && user.password === password);
-
-            if (!user) {
-                setError("Invalid email or password.");
-                return;
-            }
-
-            setError('');
-            navigate('/dashboard');
-        } catch (err) {
-            setError("An error occurred. Please try again.");
-            console.error(err);
+        if (!user) {
+            setError("Invalid email or password.");
+            return;
         }
+
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        setError('');
+        navigate('/application');
     };
 
     const togglePasswordVisibility = () => {
@@ -42,16 +36,16 @@ function Login() {
     };
 
     return (
-        <div className="login">
-            <div className="login__form">
-                <h2>Login</h2>
+        <div className="login centered">
+            <div className="form-container">
+                <h2 className="title">Login</h2>
                 <Input
                     type="email"
                     placeholder="Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 />
-                <div className="login__password-wrapper">
+                <div className="password-wrapper">
                     <Input
                         type={showPassword ? "text" : "password"}
                         placeholder="Password"
@@ -60,10 +54,10 @@ function Login() {
                     />
                     <button
                         type="button"
-                        className="login__password-toggle"
+                        className="password-toggle"
                         onClick={togglePasswordVisibility}
                     >
-                        {showPassword ? <FaEyeSlash/> : <FaEye/>}
+                        {showPassword ? <FaEyeSlash /> : <FaEye />}
                     </button>
                 </div>
                 <Button onClick={handleLogin} className="primary">Login</Button>
