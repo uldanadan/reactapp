@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import './Auth.scss';
 import Button from '../../components/UI/Button/Button';
 import Input from '../../components/UI/Input/Input';
@@ -12,6 +12,14 @@ function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
+    useEffect(() => {
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (currentUser) {
+            navigate('/applications');
+        }
+    }, [navigate]);
+
+
     const handleLogin = () => {
         if (!email || !password) {
             setError("Please fill in both fields.");
@@ -21,6 +29,12 @@ function Login() {
         const users = JSON.parse(localStorage.getItem('users')) || [];
         const user = users.find(user => user.email === email && user.password === password);
 
+        if (email === 'manager_123@gmail.com' && password === 'manager123') {
+            localStorage.setItem('currentUser', JSON.stringify({ email, role: 'manager' }));
+            navigate('/dashboard');
+            return;
+        }
+
         if (!user) {
             setError("Invalid email or password.");
             return;
@@ -28,7 +42,8 @@ function Login() {
 
         localStorage.setItem('currentUser', JSON.stringify(user));
         setError('');
-        navigate('/application');
+        navigate('/applications');
+        window.location.reload();
     };
 
     const togglePasswordVisibility = () => {
@@ -60,8 +75,14 @@ function Login() {
                         {showPassword ? <FaEyeSlash /> : <FaEye />}
                     </button>
                 </div>
-                <Button onClick={handleLogin} className="primary">Login</Button>
-                {error && <p className="login__error-message ">{error}</p>}
+                <Button onClick={handleLogin} className="primary sign">Sign in</Button>
+                <div className="login__prompt">
+                    <p className="text">Don't have an account?</p>
+                    <Link to="/register">
+                        <Button className="transparent">Sign up</Button>
+                    </Link>
+                </div>
+                {error && <p className="error-message center">{error}</p>}
             </div>
         </div>
     );

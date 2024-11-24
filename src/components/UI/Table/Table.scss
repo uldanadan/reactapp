@@ -1,0 +1,36 @@
+.table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th, td {
+    padding: 15px;
+    text-align: left;
+    border: 1px solid #ddd;
+    font-size: 14px;
+  }
+
+  th {
+    background-color: #f7f7f7;
+    color: #333;
+    font-weight: 600;
+  }
+
+  tbody tr {
+    &:nth-child(even) {
+      background-color: #fafafa;
+    }
+
+    &:hover {
+      background-color: #f1f1f1;
+    }
+  }
+
+  td {
+    color: #333;
+  }
+
+  .no-data {
+    font-size: 18px;
+    color: #555;
+  }
+}

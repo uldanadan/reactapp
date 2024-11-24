@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../../components/UI/Button/Button';
 import Input from '../../components/UI/Input/Input';
@@ -9,30 +9,55 @@ function Register() {
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+
+    const [fullNameError, setFullNameError] = useState('');
+    const [emailError, setEmailError] = useState('');
+    const [passwordError, setPasswordError] = useState('');
+
     const navigate = useNavigate();
 
+    useEffect(() => {
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (currentUser) {
+            navigate('/applications');
+        }
+    }, [navigate]);
+
     const handleRegister = () => {
-        if (!fullName || !email || !password) {
-            setError('All fields are required');
-            return;
+        setFullNameError('');
+        setEmailError('');
+        setPasswordError('');
+
+        let isValid = true;
+
+        if (!fullName) {
+            setFullNameError('*Full Name is required.');
+            isValid = false;
         }
 
-        if (!/\S+@\S+\.\S+/.test(email)) {
-            setError('Invalid email');
-            return;
+        if (!email) {
+            setEmailError('*Email is required.');
+            isValid = false;
+        } else if (!/\S+@\S+\.\S+/.test(email)) {
+            setEmailError('*Invalid email.');
+            isValid = false;
         }
 
-        if (password.length < 6) {
-            setError('Password must be at least 6 characters');
-            return;
+        if (!password) {
+            setPasswordError('*Password is required.');
+            isValid = false;
+        } else if (password.length < 8) {
+            setPasswordError('*Password must be at least 8 characters.');
+            isValid = false;
         }
+
+        if (!isValid) return;
 
         const users = JSON.parse(localStorage.getItem('users')) || [];
         const userExists = users.some(user => user.email === email);
         if (userExists) {
-            setError('User with this email already exists');
+            setEmailError('User with this email already exists');
             return;
         }
 
@@ -40,7 +65,7 @@ function Register() {
         users.push(newUser);
         localStorage.setItem('users', JSON.stringify(users));
 
-        navigate('/login');
+        navigate('/');
     };
 
     return (
@@ -54,12 +79,16 @@ function Register() {
                     placeholder="Full Name"
                     className="register__input"
                 />
+                {fullNameError && <p className="error-message">{fullNameError}</p>} {}
+
                 <Input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Email"
                 />
+                {emailError && <p className="error-message">{emailError}</p>} {}
+
                 <div className="password-wrapper">
                     <Input
                         type={showPassword ? "text" : "password"}
@@ -75,10 +104,11 @@ function Register() {
                         {showPassword ? <FaEyeSlash /> : <FaEye />}
                     </button>
                 </div>
-                <Button onClick={handleRegister} className="primary">
+                {passwordError && <p className="error-message">{passwordError}</p>} {}
+
+                <Button onClick={handleRegister} className="primary sign">
                     Register
                 </Button>
-                {error && <p className="register__error-message">{error}</p>}
             </div>
         </div>
     );

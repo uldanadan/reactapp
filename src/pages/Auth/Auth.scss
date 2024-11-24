@@ -18,7 +18,7 @@
 .password-toggle {
   position: absolute;
   right: 10px;
-  top: 50%;
+  top: 70%;
   transform: translateY(-50%);
   background: transparent;
   border: none;
@@ -33,6 +33,18 @@
 .error-message {
   color: red;
   font-size: 0.9rem;
-  margin-top: 10px;
-  text-align: center;
+  text-align: left;
+
+  &.center {
+    text-align: center;
+  }
+}
+
+.login {
+  &__prompt {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px 0;
+  }
 }

@@ -1,4 +1,4 @@
-$primary-color: #007bff;
+$primary-color: #284086;
 $secondary-color: #f8f9fa;
 $shadow-color: rgba(0, 0, 0, 0.1);
 $font-color-dark: #333;
@@ -21,6 +21,12 @@ h2, p {
   margin: 0;
 }
 
+.container {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
 .centered {
   display: flex;
   justify-content: center;
@@ -32,13 +38,19 @@ h2, p {
   font-size: 24px;
   color: #333;
   margin: 20px 0;
-  font-weight: bold;
+  font-weight: 500;
 }
 
 .text {
   color: #555;
   font-size: 16px;
   margin: 5px 0;
+}
+
+.text-file {
+  font-style: italic;
+  color: #284086;
+  margin-top: 5px;
 }
 
 .button-container {

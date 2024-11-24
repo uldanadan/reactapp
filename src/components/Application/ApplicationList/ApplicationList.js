@@ -1,37 +1,67 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './ApplicationList.scss';
+import Table from '../../UI/Table/Table';
 
 function ApplicationList() {
     const [applications, setApplications] = useState([]);
+    const [filteredStatus, setFilteredStatus] = useState('Pending');
+    const navigate = useNavigate();
 
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
     useEffect(() => {
-        fetchApplications();
-    }, []);
+        if (!currentUser) {
+            navigate('/');
+        } else {
+            fetchApplications();
+        }
+    }, [currentUser, navigate]);
 
     const fetchApplications = () => {
         const allApplications = JSON.parse(localStorage.getItem('applications')) || [];
         const userApplications = allApplications.filter(app => app.userId === currentUser.email);
-        setApplications(userApplications);
+
+        if (JSON.stringify(userApplications) !== JSON.stringify(applications)) {
+            setApplications(userApplications);
+        }
     };
 
+
+    const filteredApplications = applications.filter(app => app.status === filteredStatus);
+
+    const headers = ['App Number', 'Status', 'Submission Date', 'Description', 'File'];
+
+    const rows = filteredApplications.map((app, index) => [
+        index + 1,
+        app.status,
+        new Date(app.submissionDate).toLocaleString(),
+        app.description,
+        app.file ? app.file : 'No file'
+    ]);
+
     return (
-        <div className="application-list">
-            <h2 className="application-list__title">Your Previous Applications</h2>
-            <ul className="application-list__list">
-                {applications && applications.length > 0 ? (
-                    applications.map((app, index) => (
-                        <li key={index} className="application-list__item">
-                            <p className="application-list__item-name">{app.fullName} - {app.status}</p>
-                            <p className="application-list__item-description">{app.description}</p>
-                            {app.file && <p className="application-list__item-file">File: {app.file}</p>}
-                        </li>
-                    ))
-                ) : (
-                    <p className="application-list__no-applications">No applications yet.</p>
-                )}
-            </ul>
+        <div className="app-list">
+            <div className="container">
+                <div className="app-list__box">
+                    <h2 className="title">My Applications</h2>
+                    <div className="app-list__status-filter">
+                        <button
+                            className={`app-list__status-filter__button ${filteredStatus === 'Pending' ? 'active' : ''}`}
+                            onClick={() => setFilteredStatus('Pending')}
+                        >
+                            Pending
+                        </button>
+                        <button
+                            className={`app-list__status-filter__button ${filteredStatus === 'Approved' || filteredStatus === 'Rejected' ? 'active' : ''}`}
+                            onClick={() => setFilteredStatus(filteredStatus === 'Approved' ? 'Rejected' : 'Approved')}
+                        >
+                            Reviewed
+                        </button>
+                    </div>
+                    <Table headers={headers} rows={rows}/>
+                </div>
+            </div>
         </div>
     );
 }

@@ -18,7 +18,7 @@ function ApplicationSubmit() {
 
     useEffect(() => {
         if (!currentUser) {
-            navigate('/login');
+            navigate('/');
         }
     }, [currentUser, navigate]);
 
