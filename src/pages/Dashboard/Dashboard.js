@@ -1,15 +1,26 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Table from '../../components/UI/Table/Table';
 import Modal from '../../components/Modals/Modal';
 import './Dashboard.scss';
 
+const headers = ['App Number', 'User', 'Status', 'Actions'];
+
 function Dashboard() {
     const [applications, setApplications] = useState([]);
     const [selectedApplication, setSelectedApplication] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+        if (!currentUser || currentUser.role !== 'manager') {
+            navigate('/');
+            return;
+        }
+
         fetchApplications();
-    }, []);
+    }, [navigate]);
 
     const fetchApplications = () => {
         const allApplications = JSON.parse(localStorage.getItem('applications')) || [];
@@ -17,22 +28,24 @@ function Dashboard() {
     };
 
     const handleOpenApplication = (index) => {
-        setSelectedApplication(applications[index]);
+        navigate(`/dashboard/${index}`);
     };
 
     const handleSaveApplication = (updatedApplication) => {
-        const updatedApplications = applications.map((app) =>
-            app.appNumber === updatedApplication.appNumber ? updatedApplication : app
-        );
+        const updatedApplications = [...applications];
+        updatedApplications[updatedApplication.index] = {
+            ...applications[updatedApplication.index],
+            ...updatedApplication,
+        };
+
         setApplications(updatedApplications);
         localStorage.setItem('applications', JSON.stringify(updatedApplications));
+        setSelectedApplication(null);
     };
-
-    const headers = ['App Number', 'User', 'Status', 'Actions'];
 
     const rows = applications.map((app, index) => [
         index + 1,
-        app.user,
+        app.email,
         app.status,
     ]);
 

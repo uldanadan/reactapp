@@ -19,7 +19,11 @@ function AppSubmit() {
     useEffect(() => {
         if (!currentUser) {
             navigate('/');
+            return;
         }
+
+        setFullName(currentUser.fullName || '');
+        setEmail(currentUser.email || '');
     }, [currentUser, navigate]);
 
     const handleFileChange = (e) => {
@@ -37,7 +41,7 @@ function AppSubmit() {
 
         const applicationData = {
             fullName,
-            email,
+            email,  // используем email, а не user
             description,
             file: file ? file.name : null,
             status: 'Pending',
@@ -45,12 +49,12 @@ function AppSubmit() {
 
         const allApplications = JSON.parse(localStorage.getItem('applications')) || [];
 
-        const newApplication = { ...applicationData, user: currentUser.email };
-        allApplications.push(newApplication);
+        // Убираем user, просто добавляем заявку с email
+        allApplications.push(applicationData);
         localStorage.setItem('applications', JSON.stringify(allApplications));
 
-        setFullName('');
-        setEmail('');
+        setFullName(currentUser.fullName || '');
+        setEmail(currentUser.email || '');
         setDescription('');
         setFile(null);
         navigate('/applications');
@@ -83,10 +87,10 @@ function AppSubmit() {
                         type="file"
                         id="file"
                         onChange={handleFileChange}
-                        style={{display: 'none'}}
+                        style={{ display: 'none' }}
                     />
                     <label htmlFor="file" className="application__file-label">
-                        <FaFileUpload/> Upload File
+                        <FaFileUpload /> Upload File
                     </label>
                 </div>
                 <Button onClick={handleSubmitApplication} className="primary">

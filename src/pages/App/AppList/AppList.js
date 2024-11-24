@@ -20,7 +20,7 @@ function AppList() {
 
     const fetchApplications = () => {
         const allApplications = JSON.parse(localStorage.getItem('applications')) || [];
-        const userApplications = allApplications.filter(app => app.user === currentUser.email);
+        const userApplications = allApplications.filter(app => app.email === currentUser.email);
 
         if (JSON.stringify(userApplications) !== JSON.stringify(applications)) {
             setApplications(userApplications);

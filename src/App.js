@@ -6,6 +6,7 @@ import Register from './pages/Auth/Register';
 import AppSubmit from './pages/App/AppSubmit/AppSubmit';
 import AppList from './pages/App/AppList/AppList';
 import Dashboard from './pages/Dashboard/Dashboard';
+import DetailDashboard from './pages/Dashboard/DetailDashboard/DetailDashboard';
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -27,6 +28,7 @@ function App() {
                 <Route path="/application" element={<AppSubmit />} />
                 <Route path="/applications" element={<AppList />} />
                 <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/dashboard/:id" element={<DetailDashboard />} />
             </Routes>
         </Router>
     );
