@@ -32,6 +32,7 @@ function Login() {
         if (email === 'manager_123@gmail.com' && password === 'manager123') {
             localStorage.setItem('currentUser', JSON.stringify({ email, role: 'manager' }));
             navigate('/dashboard');
+            window.location.reload();
             return;
         }
 

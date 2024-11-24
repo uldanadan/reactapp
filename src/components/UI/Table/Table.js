@@ -1,7 +1,8 @@
 import React from 'react';
 import './Table.scss';
+import Button from '../Button/Button';
 
-function Table({ headers, rows }) {
+function Table({ headers, rows, onOpenApplication }) {
     return (
         <table className="table">
             <thead>
@@ -18,6 +19,11 @@ function Table({ headers, rows }) {
                         {row.map((cell, i) => (
                             <td key={i}>{cell}</td>
                         ))}
+                        {onOpenApplication && (
+                            <td>
+                                <Button onClick={() => onOpenApplication(index)} className="primary">Open</Button>
+                            </td>
+                        )}
                     </tr>
                 ))
             ) : (

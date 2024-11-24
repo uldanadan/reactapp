@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './ApplicationList.scss';
-import Table from '../../UI/Table/Table';
+import './AppList.scss';
+import Table from '../../../components/UI/Table/Table';
 
-function ApplicationList() {
+function AppList() {
     const [applications, setApplications] = useState([]);
     const [filteredStatus, setFilteredStatus] = useState('Pending');
     const navigate = useNavigate();
@@ -20,13 +20,12 @@ function ApplicationList() {
 
     const fetchApplications = () => {
         const allApplications = JSON.parse(localStorage.getItem('applications')) || [];
-        const userApplications = allApplications.filter(app => app.userId === currentUser.email);
+        const userApplications = allApplications.filter(app => app.user === currentUser.email);
 
         if (JSON.stringify(userApplications) !== JSON.stringify(applications)) {
             setApplications(userApplications);
         }
     };
-
 
     const filteredApplications = applications.filter(app => app.status === filteredStatus);
 
@@ -66,4 +65,4 @@ function ApplicationList() {
     );
 }
 
-export default ApplicationList;
+export default AppList;

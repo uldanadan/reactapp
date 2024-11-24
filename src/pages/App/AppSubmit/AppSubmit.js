@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Button from '../../UI/Button/Button';
-import Input from '../../UI/Input/Input';
-import Textarea from '../../UI/Textarea/Textarea';
+import Button from '../../../components/UI/Button/Button';
+import Input from '../../../components/UI/Input/Input';
+import Textarea from '../../../components/UI/Textarea/Textarea';
 import { FaFileUpload } from 'react-icons/fa';
-import './ApplicationSubmit.scss';
+import './AppSubmit.scss';
 
-function ApplicationSubmit() {
+function AppSubmit() {
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
     const [description, setDescription] = useState('');
@@ -45,7 +45,7 @@ function ApplicationSubmit() {
 
         const allApplications = JSON.parse(localStorage.getItem('applications')) || [];
 
-        const newApplication = { ...applicationData, userId: currentUser.email };
+        const newApplication = { ...applicationData, user: currentUser.email };
         allApplications.push(newApplication);
         localStorage.setItem('applications', JSON.stringify(allApplications));
 
@@ -98,4 +98,4 @@ function ApplicationSubmit() {
     );
 }
 
-export default ApplicationSubmit;
+export default AppSubmit;
